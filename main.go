@@ -12,7 +12,7 @@ import (
 var Users *users
 
 func main() {
-	db, err := NewDatabase("localhost", "docmanager")
+	db, err := NewDatabase("localhost, 192.168.100.105", "docmanager")
 	if err != nil {
 		panic(err)
 	}
