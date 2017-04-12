@@ -62,7 +62,6 @@ type User struct {
 	Username string
 	Email string
 	Password string
-	DisplayName string
 }
 
 func (u User) OK() error {
