@@ -33,9 +33,10 @@ func UserCreateHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
-	t, err := NewTemplate("Document Manager", "base", "register.html")
+	t, err := NewTemplate("Document Manager", "base", "templates/register.html")
 	if err != nil {
 		fmt.Fprintf(w, "Template error: %s", err)
+		return
 	}
 	t.Execute(w,r)
 }
@@ -61,9 +62,10 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
-	t, err := NewTemplate("Document Manager", "base", "login.html")
+	t, err := NewTemplate("Document Manager", "base", "templates/login.html")
 	if err != nil {
 		fmt.Fprintf(w, "Template error: %s", err)
+		return
 	}
 	t.Execute(w,r)
 }

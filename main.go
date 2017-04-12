@@ -30,6 +30,12 @@ func main() {
 		Handler: csrf(r),
 	}
 
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
+	r.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "favicon.ico")
+	})
+
 	r.HandleFunc("/", handleRoot)
 	r.HandleFunc("/login", UserLoginHandler)
 	r.HandleFunc("/logout", LoggedInUser(UserLogoutHandler))
@@ -40,11 +46,11 @@ func main() {
 	server.ListenAndServe()
 }
 
-
 func handleRoot(w http.ResponseWriter, r *http.Request) {
-	t, err := NewTemplate("Document Manager", "base", "root.html")
+	t, err := NewTemplate("Document Manager", "base", "templates/root.html")
 	if err != nil {
 		fmt.Fprintf(w, "Template error: %s", err)
+		return
 	}
 	t.Execute(w,r)
 }
