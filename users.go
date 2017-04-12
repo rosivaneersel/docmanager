@@ -3,6 +3,7 @@ package main
 import (
 	"gopkg.in/mgo.v2/bson"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 )
 
 type users struct {
@@ -55,7 +56,6 @@ func (u *users) Create(user *User) error {
 func NewUserController(db *db) *users {
 	return &users{db: db}
 }
-
 
 type User struct {
 	ID bson.ObjectId `bson:"_id"`
