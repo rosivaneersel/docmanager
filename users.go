@@ -3,7 +3,6 @@ package main
 import (
 	"gopkg.in/mgo.v2/bson"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 )
 
 type users struct {
