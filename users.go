@@ -34,6 +34,24 @@ func (u *users) GetUserByID(id string) (*User, error) {
 	return user, nil
 }
 
+func (u *users) Create(user *User) error {
+	err := user.OK()
+	if err != nil {
+		return err
+	}
+
+	if !user.ID.Valid() {
+		user.ID = bson.NewObjectId()
+	}
+
+	c := u.db.GetCollection("users")
+	err = c.Insert(user)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func NewUserController(db *db) *users {
 	return &users{db: db}
 }

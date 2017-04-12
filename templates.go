@@ -4,9 +4,10 @@ import (
 	"html/template"
 	"net/http"
 	"github.com/gorilla/csrf"
+	a "github.com/arjanvaneersel/docmanager/alerts"
 )
 
-var DefaultFiles = []string{"templates/index.html", "templates/_nav.html"}
+var DefaultFiles = []string{"templates/base.html", "templates/_nav.html"}
 
 type Template struct {
 	Title string
@@ -20,6 +21,7 @@ type templateData struct {
 	Data    map[string]interface{}
 	Session ActiveUser
 	CsrfField  template.HTML
+	Alerts []a.Alert
 }
 
 func (t *Template) Execute(w http.ResponseWriter, r *http.Request) {
@@ -27,7 +29,7 @@ func (t *Template) Execute(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	u, _ := GetUser(r)
-	data := templateData{t.Title, t.Data, u, csrf.TemplateField(r)}
+	data := templateData{t.Title, t.Data, u, csrf.TemplateField(r), a.Alerts.Get()}
 	t.template.ExecuteTemplate(w, t.layout, data)
 }
 
