@@ -31,6 +31,10 @@ func main() {
 	}
 
 	r.HandleFunc("/", handleRoot)
+	r.HandleFunc("/login", UserLoginHandler)
+	r.HandleFunc("/logout", LoggedInUser(UserLogoutHandler))
+	r.HandleFunc("/register", UserCreateHandler)
+
 	r.HandleFunc("/p", LoggedInUser(handleProtected))
 
 	server.ListenAndServe()
