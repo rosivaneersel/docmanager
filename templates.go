@@ -19,7 +19,7 @@ type Template struct {
 type templateData struct {
 	Title   string
 	Data    map[string]interface{}
-	Session ActiveUser
+	Session *ActiveUser
 	CsrfField  template.HTML
 	Alerts []a.Alert
 }

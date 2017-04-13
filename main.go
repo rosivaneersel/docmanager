@@ -7,9 +7,11 @@ import (
 	"fmt"
 	"github.com/gorilla/csrf"
 	"time"
+	"log"
 )
 
 var Users *users
+var Groups *groups
 
 func main() {
 	db, err := NewDatabase("localhost, 192.168.100.105", "docmanager")
@@ -18,6 +20,7 @@ func main() {
 	}
 	defer db.Close()
 	Users = NewUserController(db)
+	Groups = NewGroupController(db)
 
 	secure := false
 	csrf := csrf.Protect([]byte("dfgiort8u54u3498t9tu53yerer450rw44rt"), csrf.Secure(secure))
@@ -53,6 +56,17 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Template error: %s", err)
 		return
 	}
+
+	u, err := GetUser(r)
+	if err == nil {
+		log.Println("Active user, getting groups")
+		groups, err := Groups.GetByUserID(u.ID)
+		if err != nil {
+			log.Printf("Couldn't get user groups. %x", err)
+		}
+		t.Data["Groups"] = groups
+	}
+	log.Println("Executing template")
 	t.Execute(w,r)
 }
 
