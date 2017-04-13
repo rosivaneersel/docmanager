@@ -41,11 +41,13 @@ func main() {
 	})
 
 	r.HandleFunc("/", RootHandler)
-	r.HandleFunc("/login", UserLoginHandler)
-	r.HandleFunc("/logout", LoggedInUser(UserLogoutHandler))
+	r.HandleFunc("/login", AuthLoginHandler)
+	r.HandleFunc("/logout", LoggedInUser(AuthLogoutHandler))
+
 	r.HandleFunc("/register", UserCreateHandler)
 
-	r.HandleFunc("/p", LoggedInUser(handleProtected))
+	r.HandleFunc("/group/create", LoggedInUser(GroupCreateHandler))
+	r.HandleFunc("/group/{id}", LoggedInUser(GroupShowHandler))
 
 	server.ListenAndServe()
 }
@@ -73,8 +75,4 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println("Executing template")
 	t.Execute(w,r)
-}
-
-func handleProtected(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "Hello from this protected page!")
 }

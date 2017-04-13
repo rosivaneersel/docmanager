@@ -52,6 +52,20 @@ func (u *users) Create(user *User) error {
 	return nil
 }
 
+func (u *users) Update(user *User) error  {
+	err := user.OK()
+	if err != nil {
+		return err
+	}
+
+	c := u.db.GetCollection("users")
+	err = c.Update(bson.M{"_id": user.ID}, user)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func NewUserController(db *db) *users {
 	return &users{db: db}
 }
