@@ -39,5 +39,5 @@ func NewTemplate(title string, layout string, files ...string) (*Template, error
 	if err != nil {
 		return nil, err
 	}
-	return &Template{Title: title, layout: "base", template: t}, nil
+	return &Template{Title: title, layout: "base", template: t, Data: make(map[string]interface{})}, nil
 }

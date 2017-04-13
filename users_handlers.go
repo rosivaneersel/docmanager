@@ -56,7 +56,7 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		CreateSession(u.ID.String(), u.Username, w)
+		CreateSession(u.ID.Hex(), u.Username, w)
 
 		a.Alerts.New("Success", "alert-success", "You have succesfully logged in.")
 		http.Redirect(w, r, "/", http.StatusFound)
