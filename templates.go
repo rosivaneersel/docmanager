@@ -19,7 +19,7 @@ type Template struct {
 type templateData struct {
 	Title   string
 	Data    map[string]interface{}
-	Session *ActiveUser
+	Session ActiveUser
 	CsrfField  template.HTML
 	Alerts []a.Alert
 }
@@ -39,5 +39,5 @@ func NewTemplate(title string, layout string, files ...string) (*Template, error
 	if err != nil {
 		return nil, err
 	}
-	return &Template{Title: title, layout: layout, template: t}, nil
+	return &Template{Title: title, layout: "base", template: t}, nil
 }

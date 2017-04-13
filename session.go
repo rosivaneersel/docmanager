@@ -41,15 +41,15 @@ func DestroySession(w http.ResponseWriter) {
 	http.SetCookie(w, c)
 }
 
-func GetUser(r *http.Request) (user *ActiveUser, err error) {
+func GetUser(r *http.Request) (user ActiveUser, err error) {
 	c, err := r.Cookie("docmanager")
 	if err != nil {
-		return nil, err
+		return ActiveUser{}, err
 	}
 
 	cValue := make(map[string]interface{})
 	if err = cookieHandler.Decode("session", c.Value, &cValue); err != nil {
-		return nil, err
+		return ActiveUser{}, err
 	}
-	return &ActiveUser{ID: cValue["id"].(string), Username: cValue["username"].(string)}, nil
+	return ActiveUser{ID: cValue["id"].(string), Username: cValue["username"].(string)}, nil
 }

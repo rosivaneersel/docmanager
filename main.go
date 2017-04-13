@@ -40,7 +40,7 @@ func main() {
 		http.ServeFile(w, r, "favicon.ico")
 	})
 
-	r.HandleFunc("/", handleRoot)
+	r.HandleFunc("/", RootHandler)
 	r.HandleFunc("/login", UserLoginHandler)
 	r.HandleFunc("/logout", LoggedInUser(UserLogoutHandler))
 	r.HandleFunc("/register", UserCreateHandler)
@@ -50,7 +50,7 @@ func main() {
 	server.ListenAndServe()
 }
 
-func handleRoot(w http.ResponseWriter, r *http.Request) {
+func RootHandler(w http.ResponseWriter, r *http.Request) {
 	t, err := NewTemplate("Document Manager", "base", "templates/root.html")
 	if err != nil {
 		fmt.Fprintf(w, "Template error: %s", err)
