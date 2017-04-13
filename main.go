@@ -2,7 +2,6 @@ package main
 
 import (
 	"net/http"
-	"io"
 	"github.com/gorilla/mux"
 	"fmt"
 	"github.com/gorilla/csrf"
