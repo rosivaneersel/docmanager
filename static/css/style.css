@@ -53,3 +53,6 @@ body {
 tr.bg-gray{
   background-color: #e6e6e6;
 }
+.group{
+  margin: 0px;
+}
