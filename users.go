@@ -61,6 +61,7 @@ type User struct {
 	Username string
 	Email string
 	Password string
+	Groups []bson.ObjectId
 }
 
 func (u User) OK() error {

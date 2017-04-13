@@ -9,7 +9,6 @@ type Group struct {
 	ID bson.ObjectId `bson:"_id"`
 	Name string
 	Email string
-	Users []bson.ObjectId
 	DocumentTypes []DocumentType
 	Documents []Document
 	Batches []Batch
@@ -36,11 +35,11 @@ func (u *groups) GetByID(id string) (*Group, error) {
 	return group, nil
 }
 
-func (u *groups) GetByUserID(id string) ([]Group, error) {
+func (u *groups) GetByIDs(ids []bson.ObjectId) ([]Group, error) {
 	c := u.db.GetCollection("groups")
 	var groups []Group
 
-	err := c.Find(bson.M{"users":bson.M{"$elemMatch" : bson.M{"$eq": bson.ObjectIdHex(id)}}}).All(&groups)
+	err := c.Find(bson.M{"_id":bson.M{"$in" : ids}}).All(&groups)
 	if err != nil {
 		return nil, err
 	}

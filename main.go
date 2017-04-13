@@ -59,8 +59,13 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 
 	u, err := GetUser(r)
 	if err == nil {
+		user, err := Users.GetUserByID(u.ID)
+		if err != nil {
+			fmt.Fprintf(w, "Corrupt session. User ID is invalid.\n")
+			return
+		}
 		log.Println("Active user, getting groups")
-		groups, err := Groups.GetByUserID(u.ID)
+		groups, err := Groups.GetByIDs(user.Groups)
 		if err != nil {
 			log.Printf("Couldn't get user groups. %x", err)
 		}
