@@ -1,12 +1,29 @@
 {{ define "content" }}
   <div class="row">
-    <div class="col-xs-12 col-sm-6 col-md-4">
-      <div class="panel panel-primary">
-        <div class="panel-body">
-          <h4><i class="fa fa-university" aria-hidden="true"></i> Tanq</h4>
+    {{ if .Session.ID }}
+      {{ if .Data.Groups }}
+
+        {{ range $i, $group := .Data.Groups }}
+          <div class="col-xs-12 col-sm-6 col-md-4">
+            <a href="/group/{{ $group.ID.Hex }}">
+              <div class="panel panel-primary">
+                <div class="panel-body text-center">
+                  <h4><i class="fa fa-university" aria-hidden="true"></i> {{ $group.Name }} </h4>
+                </div>
+              </div>
+            </a>
+          </div>
+        {{ end }}
+
+      {{ else }}
+        <h2>No groups</h2>
+      {{ end }}
+      <div class="row">
+        <div class="col-xs-12">
+          <a href="/group/create" class="btn btn-primary"><i class="fa fa-university" aria-hidden="true"></i> New group</a>
         </div>
       </div>
-    </div>
+    {{ end }}
   </div>
 
 {{ end }}

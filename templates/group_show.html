@@ -1,0 +1,95 @@
+{{define "content"}}
+<div class="row">
+  <div class="col-xs-12">
+    <h2>{{ .Data.Group.Name }} <small>{{ .Data.Group.Email }}</small></h2>
+
+    <div class="panel panel-primary">
+      <div class="panel-body">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a href="#documents" aria-controls="documents" role="tab" data-toggle="tab">Documents</a></li>
+          <li role="presentation"><a href="#documenttypes" aria-controls="documenttypes" role="tab" data-toggle="tab">Document types</a></li>
+          <li role="presentation"><a href="#batches" aria-controls="batches" role="tab" data-toggle="tab">Batches</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="documents">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                Documents
+              </div>
+            </div>
+          </div>
+
+          <div role="tabpanel" class="tab-pane" id="documenttypes">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <table class="table table-bordered">
+                  <tr>
+                    <th class="col-xs-2">Code</th>
+                    <th class="col-xs-8">Name</th>
+                  </tr>
+
+                  {{ range $i, $dt := .Data.Group.DocumentTypes }}
+                    <tr>
+                      <td>{{ $dt.Code }}</td>
+                      <td>{{ $dt.Name }}</td>
+                    </tr>
+                  {{ end }}
+
+                </table>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dtModal">
+                  New
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div role="tabpanel" class="tab-pane" id="batches">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                Batches
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Document type Modal -->
+<div class="modal fade" id="dtModal" tabindex="-1" role="dialog" aria-labelledby="dtModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="dtModalLabel">New document type</h4>
+      </div>
+      <form action="/group/dt_create" method="post">
+        <div class="modal-body">
+
+            <div class="form-group">
+              <label for="code">Code</label>
+              <input type="text" class="form-control" id="code" placeholder="Code" name="Code">
+            </div>
+
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" placeholder="Name" name="Name">
+            </div>
+            <input type="hidden" name="GroupID" value="{{ .Data.Group.ID.Hex }}">
+            {{ .CsrfField }}
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{{ end }}
