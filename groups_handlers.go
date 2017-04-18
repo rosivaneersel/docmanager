@@ -5,7 +5,6 @@ import (
 	"fmt"
 	a "github.com/arjanvaneersel/docmanager/alerts"
 	"github.com/gorilla/mux"
-	"github.com/BalkanTech/goilerplate/alerts"
 )
 
 func GroupCreateHandler(w http.ResponseWriter, r *http.Request) {
@@ -80,7 +79,7 @@ func GroupCreateDocumentType(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("GroupID")
 
 	if id == "" {
-		alerts.New("Error", "alert-danger", "No GroupID in form")
+		a.Alerts.New("Error", "alert-danger", "No GroupID in form")
 	}
 
 	if r.Method == "POST" {
@@ -93,9 +92,9 @@ func GroupCreateDocumentType(w http.ResponseWriter, r *http.Request) {
 		group.DocumentTypes = append(group.DocumentTypes, DocumentType{Code: code, Name: name})
 		err = Groups.Update(group)
 		if err != nil {
-			alerts.New("Error", "alert-danger", err.Error())
+			a.Alerts.New("Error", "alert-danger", err.Error())
 		} else {
-			alerts.New("Success", "alert-danger", "Successfully added document type")
+			a.Alerts.New("Success", "alert-danger", "Successfully added document type")
 		}
 		t.Data["Group"] = group
 	}
