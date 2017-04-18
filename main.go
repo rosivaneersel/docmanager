@@ -47,6 +47,7 @@ func main() {
 
 	r.HandleFunc("/group/create", LoggedInUser(GroupCreateHandler))
 	r.HandleFunc("/group/{id}", LoggedInUser(GroupShowHandler))
+	r.HandleFunc("/group/dt_create", LoggedInUser(GroupCreateDocumentType))
 
 	server.ListenAndServe()
 }

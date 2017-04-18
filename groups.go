@@ -7,11 +7,11 @@ import (
 
 type Group struct {
 	ID bson.ObjectId `bson:"_id"`
-	Name string
-	Email string
-	DocumentTypes []DocumentType
-	Documents []Document
-	Batches []Batch
+	Name string `bson:"name"`
+	Email string `bson:"email"`
+	DocumentTypes []DocumentType `bson:"document_types"`
+	Documents []Document `bson:"documents"`
+	Batches []Batch `bson:"batches"`
 }
 
 func (g Group) OK() error{
@@ -25,8 +25,8 @@ type groups struct {
 	db *db
 }
 
-func (u *groups) GetByID(id string) (*Group, error) {
-	c := u.db.GetCollection("groups")
+func (g *groups) GetByID(id string) (*Group, error) {
+	c := g.db.GetCollection("groups")
 	group := &Group{}
 	err := c.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&group)
 	if err != nil {
@@ -35,8 +35,8 @@ func (u *groups) GetByID(id string) (*Group, error) {
 	return group, nil
 }
 
-func (u *groups) GetByIDs(ids []bson.ObjectId) ([]Group, error) {
-	c := u.db.GetCollection("groups")
+func (g *groups) GetByIDs(ids []bson.ObjectId) ([]Group, error) {
+	c := g.db.GetCollection("groups")
 	var groups []Group
 
 	err := c.Find(bson.M{"_id":bson.M{"$in" : ids}}).All(&groups)
@@ -46,7 +46,7 @@ func (u *groups) GetByIDs(ids []bson.ObjectId) ([]Group, error) {
 	return groups, nil
 }
 
-func (u *groups) Create(group *Group) error {
+func (g *groups) Create(group *Group) error {
 	err := group.OK()
 	if err != nil {
 		return err
@@ -56,8 +56,22 @@ func (u *groups) Create(group *Group) error {
 		group.ID = bson.NewObjectId()
 	}
 
-	c := u.db.GetCollection("groups")
+	c := g.db.GetCollection("groups")
 	err = c.Insert(group)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (g *groups) Update(group *Group) error {
+	err := group.OK()
+	if err != nil {
+		return err
+	}
+
+	c:= g.db.GetCollection("groups")
+	err = c.Update(bson.M{"_id": group.ID}, group)
 	if err != nil {
 		return err
 	}

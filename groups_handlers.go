@@ -5,6 +5,7 @@ import (
 	"fmt"
 	a "github.com/arjanvaneersel/docmanager/alerts"
 	"github.com/gorilla/mux"
+	"github.com/BalkanTech/goilerplate/alerts"
 )
 
 func GroupCreateHandler(w http.ResponseWriter, r *http.Request) {
@@ -45,6 +46,7 @@ func GroupCreateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	t.Execute(w,r)
+	//Todo: Redirect after change, empty form
 }
 
 func GroupShowHandler(w http.ResponseWriter, r *http.Request) {
@@ -64,4 +66,38 @@ func GroupShowHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	t.Execute(w,r)
+}
+
+func GroupCreateDocumentType(w http.ResponseWriter, r *http.Request) {
+	t, err := NewTemplate("Document Manager", "base", "templates/group_show.html")
+	if err != nil {
+		fmt.Fprintf(w, "Template error: %s", err)
+		return
+	}
+
+	code := r.FormValue("Code")
+	name := r.FormValue("Name")
+	id := r.FormValue("GroupID")
+
+	if id == "" {
+		alerts.New("Error", "alert-danger", "No GroupID in form")
+	}
+
+	if r.Method == "POST" {
+		group, err := Groups.GetByID(id)
+		if err != nil {
+			http.NotFound(w, r)
+			return
+		}
+
+		group.DocumentTypes = append(group.DocumentTypes, DocumentType{Code: code, Name: name})
+		err = Groups.Update(group)
+		if err != nil {
+			alerts.New("Error", "alert-danger", err.Error())
+		} else {
+			alerts.New("Success", "alert-danger", "Successfully added document type")
+		}
+		t.Data["Group"] = group
+	}
+	t.Execute(w, r)
 }

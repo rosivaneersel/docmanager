@@ -7,7 +7,8 @@ import (
 )
 
 type DocumentType struct {
-	Name string
+	Code string `bson:"code, unique"`
+	Name string `bson:"name"`
 }
 
 func (d DocumentType) OK() error{
@@ -19,13 +20,13 @@ func (d DocumentType) OK() error{
 
 type Document struct {
 	ID bson.ObjectId `bson:"_id"`
-	Group Group
-	UserID bson.ObjectId `bson:"_id"`
+	Group Group `bson:"group"`
+	UserID bson.ObjectId `bson:"user_id"`
 	User User `bson:"-"`
-	DocumentType DocumentType
-	Name string
-	DocumentDate time.Time
-	File string
+	DocumentType DocumentType `bson:"documenttype_id"`
+	Name string `bson:"name"`
+	DocumentDate time.Time `bson:"document_date"`
+	File string `bson:"file"`
 }
 
 func (d Document) OK() error {
