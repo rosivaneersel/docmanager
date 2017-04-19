@@ -22,7 +22,6 @@ func (d DocumentType) OK() error{
 
 type Document struct {
 	ID bson.ObjectId `bson:"_id"`
-	Group Group `bson:"group"`
 	UserID bson.ObjectId `bson:"user_id"`
 	User User `bson:"-"`
 	DocumentType DocumentType `bson:"documenttype_id"`
