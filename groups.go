@@ -21,6 +21,24 @@ func (g Group) OK() error{
 	return nil
 }
 
+func (g *Group) FindDocumentType(code string) (int, bool) {
+	for i := 0; i < len(g.DocumentTypes); i++ {
+		if g.DocumentTypes[i].Code == code {
+			return i, true
+		}
+	}
+	return -1, false
+}
+
+func (g *Group) CreateOrUpdateDocumentType(code string, dt DocumentType) {
+	i, found := g.FindDocumentType(code)
+	if found {
+		g.DocumentTypes[i] = dt
+	} else {
+		g.DocumentTypes = append(g.DocumentTypes, dt)
+	}
+}
+
 type groups struct {
 	db *db
 }

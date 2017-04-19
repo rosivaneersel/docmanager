@@ -67,13 +67,14 @@ func GroupShowHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w,r)
 }
 
-func GroupCreateDocumentType(w http.ResponseWriter, r *http.Request) {
+func GroupCreateUpdateDocumentType(w http.ResponseWriter, r *http.Request) {
 	t, err := NewTemplate("Document Manager", "base", "templates/group_show.html")
 	if err != nil {
 		fmt.Fprintf(w, "Template error: %s", err)
 		return
 	}
 
+	icode := r.FormValue("InitialCode")
 	code := r.FormValue("Code")
 	name := r.FormValue("Name")
 	id := r.FormValue("GroupID")
@@ -88,15 +89,15 @@ func GroupCreateDocumentType(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 			return
 		}
-
-		group.DocumentTypes = append(group.DocumentTypes, DocumentType{Code: code, Name: name})
+		group.CreateOrUpdateDocumentType(icode, DocumentType{Code: code, Name: name})
 		err = Groups.Update(group)
 		if err != nil {
 			a.Alerts.New("Error", "alert-danger", err.Error())
-		} else {
-			a.Alerts.New("Success", "alert-danger", "Successfully added document type")
+			t.Data["Group"] = group
+			t.Execute(w, r)
 		}
-		t.Data["Group"] = group
+		a.Alerts.New("Success", "alert-danger", "Successfully added document type")
+		http.Redirect(w, r, "/group/" + group.ID.Hex(), http.StatusFound)
 	}
 	t.Execute(w, r)
 }

@@ -7,9 +7,11 @@ import (
 )
 
 type DocumentType struct {
-	Code string `bson:"code, unique"`
+	Code string `bson:"code"`
 	Name string `bson:"name"`
 }
+
+// Todo: Code uniqueness
 
 func (d DocumentType) OK() error{
 	if len(d.Name) < 5 {
