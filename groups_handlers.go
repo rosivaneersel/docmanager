@@ -5,6 +5,7 @@ import (
 	"fmt"
 	a "github.com/arjanvaneersel/docmanager/alerts"
 	"github.com/gorilla/mux"
+	"strconv"
 )
 
 func GroupCreateHandler(w http.ResponseWriter, r *http.Request) {
@@ -68,36 +69,61 @@ func GroupShowHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GroupCreateUpdateDocumentType(w http.ResponseWriter, r *http.Request) {
-	t, err := NewTemplate("Document Manager", "base", "templates/group_show.html")
+	var idx int
+
+	t, err := NewTemplate("Document Manager", "base", "templates/group_document_type.html")
 	if err != nil {
 		fmt.Fprintf(w, "Template error: %s", err)
 		return
 	}
 
-	icode := r.FormValue("InitialCode")
-	code := r.FormValue("Code")
-	name := r.FormValue("Name")
-	id := r.FormValue("GroupID")
+	vars := mux.Vars(r)
+	groupID := vars["gid"]
+	if groupID == "" {
+		http.NotFound(w, r)
+		return
+	}
 
-	if id == "" {
-		a.Alerts.New("Error", "alert-danger", "No GroupID in form")
+	group, err := Groups.GetByID(groupID)
+	if err != nil {
+		http.NotFound(w, r)
+		return
 	}
 
 	if r.Method == "POST" {
-		group, err := Groups.GetByID(id)
-		if err != nil {
-			http.NotFound(w, r)
-			return
+		code := r.FormValue("Code")
+		name := r.FormValue("Name")
+		fi := r.FormValue("DocumentTypeIndex")
+		if fi == "" || fi == "-1"{
+			idx = -1
+		} else {
+			idx, _ = strconv.Atoi(fi)
+			t.Data["GID"] = groupID
+			t.Data["DocumentTypeIndex"] = idx
+			t.Data["DocumentType"] = group.DocumentTypes[idx]
 		}
-		group.CreateOrUpdateDocumentType(icode, DocumentType{Code: code, Name: name})
+
+		group.CreateOrUpdateDocumentType(idx, DocumentType{Code: code, Name: name})
 		err = Groups.Update(group)
 		if err != nil {
 			a.Alerts.New("Error", "alert-danger", err.Error())
-			t.Data["Group"] = group
+			t.Data["DocumentTypeIndex"] = idx
+			t.Data["DocumentType"] = group.DocumentTypes[idx]
 			t.Execute(w, r)
+			return
 		}
 		a.Alerts.New("Success", "alert-danger", "Successfully added document type")
 		http.Redirect(w, r, "/group/" + group.ID.Hex(), http.StatusFound)
 	}
+
+	i := vars["idx"]
+	if i == "" {
+		idx = -1
+	} else {
+		idx, _ = strconv.Atoi(i)
+		t.Data["DocumentTypeIndex"] = idx
+		t.Data["DocumentType"] = group.DocumentTypes[idx]
+	}
+	t.Data["GID"] = groupID
 	t.Execute(w, r)
 }

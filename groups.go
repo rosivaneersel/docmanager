@@ -30,9 +30,8 @@ func (g *Group) FindDocumentType(code string) (int, bool) {
 	return -1, false
 }
 
-func (g *Group) CreateOrUpdateDocumentType(code string, dt DocumentType) {
-	i, found := g.FindDocumentType(code)
-	if found {
+func (g *Group) CreateOrUpdateDocumentType(i int, dt DocumentType) {
+	if i >= 0 {
 		g.DocumentTypes[i] = dt
 	} else {
 		g.DocumentTypes = append(g.DocumentTypes, dt)

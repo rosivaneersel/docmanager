@@ -46,7 +46,8 @@ func main() {
 	r.HandleFunc("/register", UserCreateHandler)
 
 	r.HandleFunc("/group/create", LoggedInUser(GroupCreateHandler))
-	r.HandleFunc("/group/document_type", LoggedInUser(GroupCreateUpdateDocumentType))
+	r.HandleFunc("/document_type/{gid}/{idx}", LoggedInUser(GroupCreateUpdateDocumentType))
+	r.HandleFunc("/document_type/{gid}", LoggedInUser(GroupCreateUpdateDocumentType))
 	r.HandleFunc("/group/{id}", LoggedInUser(GroupShowHandler))
 
 	server.ListenAndServe()

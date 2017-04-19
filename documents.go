@@ -3,7 +3,6 @@ package main
 import (
 	"time"
 	"errors"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type DocumentType struct {
@@ -21,9 +20,7 @@ func (d DocumentType) OK() error{
 }
 
 type Document struct {
-	ID bson.ObjectId `bson:"_id"`
-	UserID bson.ObjectId `bson:"user_id"`
-	User User `bson:"-"`
+	User User `bson:"user"`
 	DocumentType DocumentType `bson:"documenttype_id"`
 	Name string `bson:"name"`
 	DocumentDate time.Time `bson:"document_date"`
