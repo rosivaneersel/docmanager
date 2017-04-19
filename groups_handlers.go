@@ -59,11 +59,11 @@ func GroupShowHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	t, err := NewTemplate("Document Manager", "base", "templates/group_show.html")
-	t.Data["Group"] = group
 	if err != nil {
 		fmt.Fprintf(w, "Template error: %s", err)
 		return
 	}
+	t.Data["Group"] = group
 	t.Execute(w,r)
 }
 
