@@ -1,0 +1,29 @@
+{{define "content"}}
+    <div class="row">
+      <div class="panel panel-primary col-xs-12 col-md-4 col-md-offset-4">
+        <div class="panel-body">
+          <form action="/document_type/{{ .Data.GID }}" method="post">
+            <div class="text-center text-primary form-icon">
+              <i class="fa fa-user-circle fa-5x"></i>
+            </div>
+
+            <div class="form-group">
+              <label for="code">Code</label>
+              <input type="text" class="form-control" id="code" placeholder="Code" name="Code" value="{{ .Data.DocumentType.Code }}">
+            </div>
+
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" placeholder="Name" name="Name" value="{{ .Data.DocumentType.Name }}">
+            </div>
+
+            <input type="hidden" name="DocumentTypeIndex" value="{{ .Data.DocumentTypeIndex }}">
+
+            {{ .CsrfField }}
+            
+            <button type="submit" class="btn btn-primary btn-sm pull-right"><i class="fa fa-sign-in" aria-hidden="true"></i> Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+{{end}}
