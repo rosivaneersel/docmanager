@@ -136,7 +136,7 @@ func GroupDeleteDocumentType(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fi := r.FormValue("DocumentTypeIndex")
+	fi := vars["idx"]
 	if fi == "" {
 		http.NotFound(w, r)
 		return
