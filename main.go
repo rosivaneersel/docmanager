@@ -46,9 +46,14 @@ func main() {
 	r.HandleFunc("/register", UserCreateHandler)
 
 	r.HandleFunc("/group/create", LoggedInUser(GroupCreateHandler))
+	r.HandleFunc("/group/{id}", LoggedInUser(GroupShowHandler))
+
 	r.HandleFunc("/document_type/{gid}/{idx}", LoggedInUser(GroupCreateUpdateDocumentType))
 	r.HandleFunc("/document_type/{gid}", LoggedInUser(GroupCreateUpdateDocumentType))
-	r.HandleFunc("/group/{id}", LoggedInUser(GroupShowHandler))
+	r.HandleFunc("/document_type/{gid}/{idx}/delete", LoggedInUser(GroupDeleteDocumentType))
+
+	//r.HandleFunc("/batch/{gid}/{idx}", LoggedInUser(GroupCreateUpdateBatch))
+	//r.HandleFunc("/batch/{gid}", LoggedInUser(GroupCreateUpdateBatch))
 
 	server.ListenAndServe()
 }

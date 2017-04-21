@@ -6,6 +6,7 @@ import (
 	a "github.com/arjanvaneersel/docmanager/alerts"
 	"github.com/gorilla/mux"
 	"strconv"
+	"gx/ipfs/QmZ4Qi3GaRbjcx28Sme5eMH7RQjGkt8wHxt2a65oLaeFEV/gogo-protobuf/test/group"
 )
 
 func GroupCreateHandler(w http.ResponseWriter, r *http.Request) {
@@ -69,6 +70,97 @@ func GroupShowHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GroupCreateUpdateDocumentType(w http.ResponseWriter, r *http.Request) {
+	var idx int
+
+	t, err := NewTemplate("Document Manager", "base", "templates/group_document_type.html")
+	if err != nil {
+		fmt.Fprintf(w, "Template error: %s", err)
+		return
+	}
+
+	vars := mux.Vars(r)
+	groupID := vars["gid"]
+	if groupID == "" {
+		http.NotFound(w, r)
+		return
+	}
+
+	group, err := Groups.GetByID(groupID)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	if r.Method == "POST" {
+		code := r.FormValue("Code")
+		name := r.FormValue("Name")
+		fi := r.FormValue("DocumentTypeIndex")
+		if fi == "" || fi == "-1"{
+			idx = -1
+		} else {
+			idx, _ = strconv.Atoi(fi)
+			t.Data["GID"] = groupID
+			t.Data["DocumentTypeIndex"] = idx
+			t.Data["DocumentType"] = group.DocumentTypes[idx]
+		}
+
+		group.CreateOrUpdateDocumentType(idx, DocumentType{Code: code, Name: name})
+		err = Groups.Update(group)
+		if err != nil {
+			a.Alerts.New("Error", "alert-danger", err.Error())
+			t.Data["DocumentTypeIndex"] = idx
+			t.Data["DocumentType"] = group.DocumentTypes[idx]
+			t.Execute(w, r)
+			return
+		}
+		a.Alerts.New("Success", "alert-danger", "Successfully added document type")
+		http.Redirect(w, r, "/group/" + group.ID.Hex(), http.StatusFound)
+	}
+
+	i := vars["idx"]
+	if i == "" {
+		idx = -1
+	} else {
+		idx, _ = strconv.Atoi(i)
+		t.Data["DocumentTypeIndex"] = idx
+		t.Data["DocumentType"] = group.DocumentTypes[idx]
+	}
+	t.Data["GID"] = groupID
+	t.Execute(w, r)
+}
+
+func GroupDeleteDocumentType(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		vars := mux.Vars(r)
+		groupID := vars["gid"]
+		if groupID == "" {
+			http.NotFound(w, r)
+			return
+		}
+
+		fi := r.FormValue("DocumentTypeIndex")
+		if fi == "" {
+			http.NotFound(w, r)
+			return
+		}
+
+		group, err := Groups.GetByID(groupID)
+		if err != nil {
+			http.NotFound(w, r)
+			return
+		}
+
+		i, _ := strconv.Atoi(fi)
+		group.DocumentTypes = append(group.DocumentTypes[:i], group.DocumentTypes[i+1:]...)
+
+		a.Alerts.New("Success", "alert-danger", "Successfully deleted document type")
+		http.Redirect(w, r, "/group/" + group.ID.Hex(), http.StatusFound)
+	}
+	http.NotFound(w, r)
+	return
+}
+
+func GroupCreateUpdateBatch(w http.ResponseWriter, r *http.Request) {
 	var idx int
 
 	t, err := NewTemplate("Document Manager", "base", "templates/group_document_type.html")

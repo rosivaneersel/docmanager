@@ -8,7 +8,7 @@ import (
 
 type Batch struct {
 	Name string
-	Emails string
+	Emails []string
 	ExecutionDate time.Time
 	DocumentTypes []bson.ObjectId
 }
