@@ -6,7 +6,6 @@ import (
 	a "github.com/arjanvaneersel/docmanager/alerts"
 	"github.com/gorilla/mux"
 	"strconv"
-	"gx/ipfs/QmZ4Qi3GaRbjcx28Sme5eMH7RQjGkt8wHxt2a65oLaeFEV/gogo-protobuf/test/group"
 )
 
 func GroupCreateHandler(w http.ResponseWriter, r *http.Request) {
