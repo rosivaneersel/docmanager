@@ -1,0 +1,46 @@
+{{define "content"}}
+    <div class="row">
+      <div class="panel panel-primary col-xs-12 col-md-4 col-md-offset-4">
+        <div class="panel-body">
+          <form action="/document/{{ .Data.GID }}" method="post" enctype="multipart/form-data">
+            <div class="text-center text-primary form-icon">
+              <i class="fa  fa-tags fa-5x"></i>
+              <h3>Document</h3>
+            </div>
+
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" placeholder="Name" name="Name" value="{{ .Data.Document.Name }}">
+            </div>
+
+            <div class="form-group">
+              <label for="documentdate">Document date</label>
+              <input type="date" class="form-control" id="documentdate" name="DocumentDate" value="{{ .Data.Document.DocumentDate }}">
+            </div>
+
+            <div class="form-group">
+              <label for="documenttype">Document type</label>
+              <select class="form-control" id="documenttype" name="DocumentType">
+                  <option value="" {{ if not .Data.Document.DocumentType.Code }}selected{{ end }}>-- Select a document type --</option>
+                    {{ range $i, $dt := .Data.DocumentTypes }}
+                        <option value="{{ $dt.Code }}" {{ if $dt.Code eq $.Data.Document.DocumentType.Code }}selected{{ end }}>{{ $dt.Name }}</option>
+                    {{ end }}
+              </select>
+
+              <div class="form-group">
+                <label for="file">File</label>
+                <input type="file" id="file" name="File">
+              </div>
+
+            </div>
+
+            <input type="hidden" name="DocumentIndex" value="{{ .Data.DocumentIndex }}">
+
+            {{ .CsrfField }}
+            
+            <button type="submit" class="btn btn-primary btn-sm pull-right"><i class="fa fa-sign-in" aria-hidden="true"></i> Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+{{end}}

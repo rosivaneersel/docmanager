@@ -19,10 +19,11 @@
               <div class="panel-body">
                 <table class="table table-bordered">
                   <tr>
-                    <th class="col-xs-8">Type</th>
-                    <th class="col-xs-8">Name</th>
-                    <th class="col-xs-8">Date</th>
-                    <th class="col-xs-8">User</th>
+                    <th class="col-xs-2">Type</th>
+                    <th class="col-xs-5">Name</th>
+                    <th class="col-xs-2">Date</th>
+                    <th class="col-xs-2">User</th>
+                    <th class="col-xs-1">Action</th>
                   </tr>
 
                   {{ range $i, $doc := .Data.Group.Documents }}
@@ -31,13 +32,17 @@
                       <td>{{ $doc.Name }}</td>
                       <td>{{ $doc.DocumentDate }}</td>
                       <td>{{ $doc.User.Email }}</td>
+                      <td>
+                        <a href="/document/{{ $.Data.Group.ID.Hex }}/{{ $i }}"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a>
+                        <a href="/document/{{ $.Data.Group.ID.Hex }}/{{ $i }}/delete"><i class="text-danger fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                      </td>
                     </tr>
                   {{ end }}
 
                 </table>
-                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#docModal">
+                <a href="/document/{{ .Data.Group.ID.Hex }}" class="btn btn-primary">
                   New
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -48,15 +53,18 @@
                 <table class="table table-bordered">
                   <tr>
                     <th class="col-xs-2">Code</th>
-                    <th class="col-xs-8">Name</th>
-                    <th>Action</th>
+                    <th class="col-xs-9">Name</th>
+                    <th class="col-xs-1">Action</th>
                   </tr>
 
                   {{ range $i, $dt := .Data.Group.DocumentTypes }}
                     <tr>
                       <td>{{ $dt.Code }}</td>
                       <td>{{ $dt.Name }}</td>
-                      <td><a href="/document_type/{{ $.Data.Group.ID.Hex }}/{{ $i }}">Edit</a></td>
+                      <td>
+                        <a href="/document_type/{{ $.Data.Group.ID.Hex }}/{{ $i }}"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a>
+                        <a href="/document_type/{{ $.Data.Group.ID.Hex }}/{{ $i }}/delete"><i class="text-danger fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                      </td>
                     </tr>
                   {{ end }}
 
@@ -75,19 +83,25 @@
                   <tr>
                     <th class="col-xs-2">Name</th>
                     <th class="col-xs-8">Execution Date</th>
+                    <th class="col-xs-1">Action</th>
                   </tr>
 
                   {{ range $i, $batch := .Data.Group.Batches }}
                     <tr>
                       <td>{{ $batch.Name }}</td>
                       <td>{{ $batch.ExecutionDate }}</td>
+                      <td>
+                        <a href="/batches/{{ $.Data.Group.ID.Hex }}/{{ $i }}"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a>
+                        <a href="/batches/{{ $.Data.Group.ID.Hex }}/{{ $i }}/delete"><i class="text-danger fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                      </td>
                     </tr>
                   {{ end }}
 
                 </table>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#batchModal">
+                
+                 <a href="/batch/{{ .Data.Group.ID.Hex }}" class="btn btn-primary">
                   New
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -97,5 +111,18 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Javascript to enable link to tab
+  var url = document.location.toString();
+  if (url.match('#')) {
+    $('.nav-tabs a[href="#' + url.split('#')[1] + ']').tab('show');
+  } //add a suffix
+
+  // Change hash for page-reload  
+  $('.nav-tabs a').on('shown.bs.tab', function (e) {
+    window.location.hash = e.target.hash;
+  })
+</script>
 
 {{ end }}
