@@ -17,7 +17,27 @@
           <div role="tabpanel" class="tab-pane active" id="documents">
             <div class="panel panel-default">
               <div class="panel-body">
-                Documents
+                <table class="table table-bordered">
+                  <tr>
+                    <th class="col-xs-8">Type</th>
+                    <th class="col-xs-8">Name</th>
+                    <th class="col-xs-8">Date</th>
+                    <th class="col-xs-8">User</th>
+                  </tr>
+
+                  {{ range $i, $doc := .Data.Group.Documents }}
+                    <tr>
+                      <td>{{ $doc.DocumentType.Name }}</td>
+                      <td>{{ $doc.Name }}</td>
+                      <td>{{ $doc.DocumentDate }}</td>
+                      <td>{{ $doc.User.Email }}</td>
+                    </tr>
+                  {{ end }}
+
+                </table>
+                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#docModal">
+                  New
+                </button>
               </div>
             </div>
           </div>
@@ -29,19 +49,21 @@
                   <tr>
                     <th class="col-xs-2">Code</th>
                     <th class="col-xs-8">Name</th>
+                    <th>Action</th>
                   </tr>
 
                   {{ range $i, $dt := .Data.Group.DocumentTypes }}
                     <tr>
                       <td>{{ $dt.Code }}</td>
                       <td>{{ $dt.Name }}</td>
+                      <td><a href="/document_type/{{ $.Data.Group.ID.Hex }}/{{ $i }}">Edit</a></td>
                     </tr>
                   {{ end }}
 
                 </table>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dtModal">
+                <a href="/document_type/{{ .Data.Group.ID.Hex }}" class="btn btn-primary">
                   New
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -49,7 +71,23 @@
           <div role="tabpanel" class="tab-pane" id="batches">
             <div class="panel panel-default">
               <div class="panel-body">
-                Batches
+                <table class="table table-bordered">
+                  <tr>
+                    <th class="col-xs-2">Name</th>
+                    <th class="col-xs-8">Execution Date</th>
+                  </tr>
+
+                  {{ range $i, $batch := .Data.Group.Batches }}
+                    <tr>
+                      <td>{{ $batch.Name }}</td>
+                      <td>{{ $batch.ExecutionDate }}</td>
+                    </tr>
+                  {{ end }}
+
+                </table>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#batchModal">
+                  New
+                </button>
               </div>
             </div>
           </div>
@@ -60,36 +98,4 @@
   </div>
 </div>
 
-<!-- Document type Modal -->
-<div class="modal fade" id="dtModal" tabindex="-1" role="dialog" aria-labelledby="dtModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="dtModalLabel">New document type</h4>
-      </div>
-      <form action="/group/dt_create" method="post">
-        <div class="modal-body">
-
-            <div class="form-group">
-              <label for="code">Code</label>
-              <input type="text" class="form-control" id="code" placeholder="Code" name="Code">
-            </div>
-
-            <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" class="form-control" id="name" placeholder="Name" name="Name">
-            </div>
-            <input type="hidden" name="GroupID" value="{{ .Data.Group.ID.Hex }}">
-            {{ .CsrfField }}
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 {{ end }}
