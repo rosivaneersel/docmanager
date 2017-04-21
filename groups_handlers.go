@@ -112,7 +112,7 @@ func GroupCreateUpdateDocumentType(w http.ResponseWriter, r *http.Request) {
 			t.Execute(w, r)
 			return
 		}
-		a.Alerts.New("Success", "alert-danger", "Successfully added document type")
+		a.Alerts.New("Success", "alert-success", "Successfully added document type")
 		http.Redirect(w, r, "/group/" + group.ID.Hex(), http.StatusFound)
 	}
 
@@ -151,14 +151,14 @@ func GroupDeleteDocumentType(w http.ResponseWriter, r *http.Request) {
 	i, _ := strconv.Atoi(fi)
 	group.DocumentTypes = append(group.DocumentTypes[:i], group.DocumentTypes[i+1:]...)
 
-	a.Alerts.New("Success", "alert-danger", "Successfully deleted document type")
+	a.Alerts.New("Success", "alert-success", "Successfully deleted document type")
 	http.Redirect(w, r, "/group/" + group.ID.Hex(), http.StatusFound)
 }
 
 func GroupCreateUpdateBatch(w http.ResponseWriter, r *http.Request) {
 	var idx int
 
-	t, err := NewTemplate("Document Manager", "base", "templates/group_document_type.html")
+	t, err := NewTemplate("Document Manager", "base", "templates/group_batch.html")
 	if err != nil {
 		fmt.Fprintf(w, "Template error: %s", err)
 		return
@@ -180,22 +180,22 @@ func GroupCreateUpdateBatch(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		code := r.FormValue("Code")
 		name := r.FormValue("Name")
-		fi := r.FormValue("DocumentTypeIndex")
+		fi := r.FormValue("BatchIndex")
 		if fi == "" || fi == "-1"{
 			idx = -1
 		} else {
 			idx, _ = strconv.Atoi(fi)
 			t.Data["GID"] = groupID
-			t.Data["DocumentTypeIndex"] = idx
-			t.Data["DocumentType"] = group.DocumentTypes[idx]
+			t.Data["BatchIndex"] = idx
+			t.Data["Batch"] = group.Batches[idx]
 		}
 
 		group.CreateOrUpdateDocumentType(idx, DocumentType{Code: code, Name: name})
 		err = Groups.Update(group)
 		if err != nil {
 			a.Alerts.New("Error", "alert-danger", err.Error())
-			t.Data["DocumentTypeIndex"] = idx
-			t.Data["DocumentType"] = group.DocumentTypes[idx]
+			t.Data["BatchIndex"] = idx
+			t.Data["Batch"] = group.Batches[idx]
 			t.Execute(w, r)
 			return
 		}
@@ -208,9 +208,37 @@ func GroupCreateUpdateBatch(w http.ResponseWriter, r *http.Request) {
 		idx = -1
 	} else {
 		idx, _ = strconv.Atoi(i)
-		t.Data["DocumentTypeIndex"] = idx
-		t.Data["DocumentType"] = group.DocumentTypes[idx]
+		t.Data["BatchIndex"] = idx
+		t.Data["Batch"] = group.Batches[idx]
 	}
 	t.Data["GID"] = groupID
+	t.Data["DocumentTypes"] = group.DocumentTypes
 	t.Execute(w, r)
+}
+
+func GroupDeleteBatch(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	groupID := vars["gid"]
+	if groupID == "" {
+		http.NotFound(w, r)
+		return
+	}
+
+	fi := vars["idx"]
+	if fi == "" {
+		http.NotFound(w, r)
+		return
+	}
+
+	group, err := Groups.GetByID(groupID)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	i, _ := strconv.Atoi(fi)
+	group.Batches = append(group.Batches[:i], group.Batches[i+1:]...)
+
+	a.Alerts.New("Success", "alert-success", "Successfully deleted document type")
+	http.Redirect(w, r, "/group/" + group.ID.Hex(), http.StatusFound)
 }
