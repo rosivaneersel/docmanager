@@ -129,34 +129,30 @@ func GroupCreateUpdateDocumentType(w http.ResponseWriter, r *http.Request) {
 }
 
 func GroupDeleteDocumentType(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		vars := mux.Vars(r)
-		groupID := vars["gid"]
-		if groupID == "" {
-			http.NotFound(w, r)
-			return
-		}
-
-		fi := r.FormValue("DocumentTypeIndex")
-		if fi == "" {
-			http.NotFound(w, r)
-			return
-		}
-
-		group, err := Groups.GetByID(groupID)
-		if err != nil {
-			http.NotFound(w, r)
-			return
-		}
-
-		i, _ := strconv.Atoi(fi)
-		group.DocumentTypes = append(group.DocumentTypes[:i], group.DocumentTypes[i+1:]...)
-
-		a.Alerts.New("Success", "alert-danger", "Successfully deleted document type")
-		http.Redirect(w, r, "/group/" + group.ID.Hex(), http.StatusFound)
+	vars := mux.Vars(r)
+	groupID := vars["gid"]
+	if groupID == "" {
+		http.NotFound(w, r)
+		return
 	}
-	http.NotFound(w, r)
-	return
+
+	fi := r.FormValue("DocumentTypeIndex")
+	if fi == "" {
+		http.NotFound(w, r)
+		return
+	}
+
+	group, err := Groups.GetByID(groupID)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	i, _ := strconv.Atoi(fi)
+	group.DocumentTypes = append(group.DocumentTypes[:i], group.DocumentTypes[i+1:]...)
+
+	a.Alerts.New("Success", "alert-danger", "Successfully deleted document type")
+	http.Redirect(w, r, "/group/" + group.ID.Hex(), http.StatusFound)
 }
 
 func GroupCreateUpdateBatch(w http.ResponseWriter, r *http.Request) {
